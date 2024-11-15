@@ -29,7 +29,7 @@ public class UserController {
 	
 	// Register a new user
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody String username) {
+    public ResponseEntity<String> registerUser(@RequestParam String username) {
         try {
             String password=userService.registerUser(username);
             return ResponseEntity.ok("User registered successfully. Password: " + password);
