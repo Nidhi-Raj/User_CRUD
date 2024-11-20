@@ -6,21 +6,29 @@ import java.util.Optional;
 import com.example.demo.entity.User;
 
 public interface UserService {
+	
+public String registerUser(String username, String email, int age);
+
+public List<String> registerUsersInBulk(List<User> users);
+
+
+public Optional<User> findUserByUsername(String username);
 
 public List<User> getAllUsers();
 
-public Optional<User> getUserByUserName(String username);
-
 public Optional<User> getUserById(Long id);
 
-public void bulkRegisterUsers(List<String> userNames);
-
-public String registerUser(String username);
-
-public Optional<User> deleteUserByUserName(String username);
+public void deleteUser(String username);
 
 public Optional<User> restoreUserByUsername(String username);
 
-public String getUserNameFromEncryptedPassword(String encryptedPassword) ;
+public String generateEncryptedPassword(String username);
+
+public String retrieveUsernameFromPassword(String password);
+
+
+
+//public String getUserNameFromEncryptedPassword(String encryptedPassword) ;
+
 
 }

@@ -29,24 +29,16 @@ public class UserController {
 	
 	// Register a new user
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestParam String username) {
-        try {
-            String password=userService.registerUser(username);
-            return ResponseEntity.ok("User registered successfully. Password: " + password);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
-    }
+    public String registerUser(@RequestParam String username,
+            @RequestParam String email,
+            @RequestParam int age) {
+		return userService.registerUser(username, email, age);
+		}
     
-	 // Endpoint to bulk register users
+ // Bulk registration endpoint
     @PostMapping("/register/bulk")
-    public ResponseEntity<String> bulkRegister(@RequestBody List<String> usernames) {
-        try {
-            userService.bulkRegisterUsers(usernames);
-            return ResponseEntity.ok("Users registered successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error registering users: " + e.getMessage());
-        }
+    public List<String> registerUsersInBulk(@RequestBody List<User> users) {
+        return userService.registerUsersInBulk(users);
     }
 	
 	//Retrive all the users
@@ -62,25 +54,17 @@ public class UserController {
     }
     
  // GET request to fetch a user by their username
-    @GetMapping("/username/{username}")
-    public ResponseEntity<User> getUserByUserName(@PathVariable String username) {
-        Optional<User> user = userService.getUserByUserName(username);
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
-            return ResponseEntity.notFound().build(); // Return 404 if the user is not found
-        }
+ // Find a user by username
+    @GetMapping("/find")
+    public Optional<User> findUser(@RequestParam String username) {
+        return userService.findUserByUsername(username);
     }
     
- // Delete a user by username (soft delete)
-    @DeleteMapping("/delete/{username}")
-    public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
-        try {
-            userService.deleteUserByUserName(username);
-            return ResponseEntity.ok("User deleted successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
+    // Delete a user by username
+    @DeleteMapping("/delete")
+    public String deleteUser(@RequestParam String username) {
+        userService.deleteUser(username);
+        return "User deleted successfully.";
     }
     
  // Restore a deleted user
@@ -94,17 +78,20 @@ public class UserController {
         }
     }
     
+    //Endpoint to get password from username.
+    @GetMapping("/{username}/password")
+    public String getEncryptedPassword(@PathVariable String username) {
+        return userService.generateEncryptedPassword(username);
+    }
     
- // Endpoint to get the username from an encrypted password (hash)
-    @GetMapping("/username/from-encrypted-password")
-    public ResponseEntity<String> getUserNameFromEncryptedPassword(@RequestParam String encryptedPassword) {
-        try {
-            // Fetch the username associated with the encrypted password
-            String username = userService.getUserNameFromEncryptedPassword(encryptedPassword);
-            return ResponseEntity.ok("Username: " + username); // Return the username
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());  // Return error if no user found
-        }
+    /**
+     * Endpoint to retrieve the username linked to a password.
+     * @param password The encrypted password.
+     * @return The username linked to the password.
+     */
+    @GetMapping("/retrieve-username")
+    public String retrieveUsername(@RequestParam String password) {
+        return userService.retrieveUsernameFromPassword(password);
     }
 
 }

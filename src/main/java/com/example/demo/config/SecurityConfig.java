@@ -21,7 +21,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 	            .requestMatchers(HttpMethod.PUT, "/api/users/update/**").permitAll()   
 	            .requestMatchers(HttpMethod.DELETE, "/api/users/delete/**").permitAll() 
 	            .requestMatchers(HttpMethod.POST,"/api/users/register/bulk").permitAll()	        
-	            .requestMatchers(HttpMethod.GET,"/api/users/username/from-password").permitAll();
+	            .requestMatchers(HttpMethod.GET,"/api/users/username/from-password").permitAll()
+	            .requestMatchers(HttpMethod.GET,"/api/users/find/**").permitAll();
 	            
 	        return http.build();
 	    }
